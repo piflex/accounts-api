@@ -1,0 +1,16 @@
+{
+    "name": "appsco/accounts-api",
+    "license": "MIT",
+    "prefer-stable": true,
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-0": { "Appsco\\Accounts\\Api\\": "src/" }
+    }, 
+    "require": {
+        "symfony/http-foundation": ">=2.2",
+        "symfony/security": ">=2.2",
+        "symfony/routing": ">=2.2",
+        "jms/serializer-bundle": "~0.13",
+        "appsco/component-share": "*"
+    }
+}
