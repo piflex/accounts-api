@@ -11,8 +11,7 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 
-
-class AppscoOAuth
+class AppscoOAuth implements AppscoOAuthInterface
 {
     /** @var  AppscoClient */
     protected $client;
@@ -34,8 +33,22 @@ class AppscoOAuth
 
 
 
+
+    /**
+     * @return \Appsco\Accounts\Api\AppscoClient
+     */
+    public function getClient()
+    {
+        return $this->client;
+    }
+
+
+
+
+
     /**
      * @param array|string[] $scope
+     * @param string|null $redirectUri
      * @return RedirectResponse
      */
     public function start(array $scope = array(), $redirectUri = null)
@@ -52,6 +65,7 @@ class AppscoOAuth
      * @param Request $request
      * @param string|null $redirectUri
      * @throws \Symfony\Component\Security\Core\Exception\AuthenticationException
+     * @throws AppscoOAuthException
      * @return AppscoToken
      */
     public function callback(Request $request, $redirectUri = null)
@@ -60,15 +74,28 @@ class AppscoOAuth
         $state = $request->get('state');
 
         $this->validateState($state);
+        $this->checkError($request);
 
         $this->client->getAccessData($code, $redirectUri);
         $profile = $this->client->profileRead('me');
 
-        if (!$profile) {
+        if (false == $profile) {
             throw new AuthenticationException('Unable to get profile info from Appsco');
         }
 
         return $this->createToken($profile);
+    }
+
+
+    /**
+     * @param Request $request
+     * @throws AppscoOAuthException
+     */
+    protected function checkError(Request $request)
+    {
+        if ($error = $request->query->get('error')) {
+            throw new AppscoOAuthException($error, $request->query->get('error_description'));
+        }
     }
 
     /**
