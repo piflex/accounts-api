@@ -1,6 +1,6 @@
 <?php
 
-namespace Appsco\Accounts\Api\Model;
+namespace Appsco\Accounts\ApiBundle\Model;
 
 use JMS\Serializer\Annotation as JMS;
 
@@ -28,7 +28,7 @@ class AccessData
 
     /**
      * @param string $accessToken
-     * @return $this|Token
+     * @return $this|AccessData
      */
     public function setAccessToken($accessToken)
     {
@@ -46,7 +46,7 @@ class AccessData
 
     /**
      * @param string $scope
-     * @return $this|Token
+     * @return $this|AccessData
      */
     public function setScope($scope)
     {
@@ -64,7 +64,7 @@ class AccessData
 
     /**
      * @param string $tokenType
-     * @return $this|Token
+     * @return $this|AccessData
      */
     public function setTokenType($tokenType)
     {

@@ -1,10 +1,10 @@
 <?php
 
-namespace Appsco\Accounts\Api\OAuth;
+namespace Appsco\Accounts\ApiBundle\OAuth;
 
-use Appsco\Accounts\Api\AppscoClient;
-use Appsco\Accounts\Api\Model\Profile;
-use Appsco\Accounts\Api\Security\Core\Authentication\AppscoToken;
+use Appsco\Accounts\ApiBundle\Client\AccountsClient;
+use Appsco\Accounts\ApiBundle\Model\Profile;
+use Appsco\Accounts\ApiBundle\Security\Core\Authentication\AppscoToken;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -13,7 +13,7 @@ use Symfony\Component\Security\Core\Exception\AuthenticationException;
 
 class AppscoOAuth implements AppscoOAuthInterface
 {
-    /** @var  AppscoClient */
+    /** @var  AccountsClient */
     protected $client;
 
     /** @var  SessionInterface */
@@ -22,15 +22,14 @@ class AppscoOAuth implements AppscoOAuthInterface
 
 
     /**
-     * @param AppscoClient $client
+     * @param AccountsClient $client
      * @param SessionInterface $session
      */
-    public function __construct(AppscoClient $client, SessionInterface $session)
+    public function __construct(AccountsClient $client, SessionInterface $session)
     {
         $this->client = $client;
         $this->session = $session;
     }
-
 
 
 
@@ -129,7 +128,7 @@ class AppscoOAuth implements AppscoOAuthInterface
     }
 
     /**
-     * @param \Appsco\Accounts\Api\Model\Profile $profile
+     * @param \Appsco\Accounts\ApiBundle\Model\Profile $profile
      * @return AppscoToken
      */
     protected function createToken(Profile $profile)

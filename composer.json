@@ -4,12 +4,10 @@
     "prefer-stable": true,
     "minimum-stability": "dev",
     "autoload": {
-        "psr-0": { "Appsco\\Accounts\\Api\\": "src/" }
+        "psr-0": { "Appsco\\Accounts\\ApiBundle\\": "src/" }
     }, 
     "require": {
-        "symfony/http-foundation": ">=2.2",
-        "symfony/security": ">=2.2",
-        "symfony/routing": ">=2.2",
+        "symfony/symfony": "~2.4",
         "jms/serializer-bundle": "~0.13",
         "appsco/component-share": "*"
     }

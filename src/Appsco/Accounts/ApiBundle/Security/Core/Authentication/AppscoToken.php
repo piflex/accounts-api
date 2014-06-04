@@ -1,8 +1,8 @@
 <?php
 
-namespace Appsco\Accounts\Api\Security\Core\Authentication;
+namespace Appsco\Accounts\ApiBundle\Security\Core\Authentication;
 
-use Appsco\Accounts\Api\Model\Profile;
+use Appsco\Accounts\ApiBundle\Model\Profile;
 use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
 
 class AppscoToken extends AbstractToken

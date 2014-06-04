@@ -1,6 +1,6 @@
 <?php
 
-namespace Appsco\Accounts\Api\Model;
+namespace Appsco\Accounts\ApiBundle\Model;
 
 use JMS\Serializer\Annotation as JMS;
 
@@ -80,7 +80,7 @@ class Profile
 
     /**
      * @var Directory
-     * @JMS\Type("Appsco\Accounts\Api\Model\Directory")
+     * @JMS\Type("Appsco\Accounts\ApiBundle\Model\Directory")
      */
     protected $directory;
 
@@ -124,7 +124,7 @@ class Profile
     }
 
     /**
-     * @param \Appsco\Accounts\Api\Model\Directory $directory
+     * @param \Appsco\Accounts\ApiBundle\Model\Directory $directory
      * @return $this|Profile
      */
     public function setDirectory($directory)
@@ -134,7 +134,7 @@ class Profile
     }
 
     /**
-     * @return \Appsco\Accounts\Api\Model\Directory
+     * @return \Appsco\Accounts\ApiBundle\Model\Directory
      */
     public function getDirectory()
     {

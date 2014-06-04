@@ -1,6 +1,6 @@
 <?php
 
-namespace Appsco\Accounts\Api\Model;
+namespace Appsco\Accounts\ApiBundle\Model;
 
 use JMS\Serializer\Annotation as JMS;
 

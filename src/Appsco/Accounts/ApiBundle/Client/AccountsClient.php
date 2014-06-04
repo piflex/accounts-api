@@ -1,14 +1,16 @@
 <?php
 
-namespace Appsco\Accounts\Api;
+namespace Appsco\Accounts\ApiBundle\Client;
 
-use Appsco\Accounts\Api\Model\AccessData;
-use Appsco\Accounts\Api\Model\Profile;
+use Appsco\Accounts\ApiBundle\Model\AccessData;
+use Appsco\Accounts\ApiBundle\Model\CertificateList;
+use Appsco\Accounts\ApiBundle\Model\Profile;
 use BWC\Share\Net\HttpClient\HttpClientInterface;
+use BWC\Share\Net\HttpStatusCode;
 use JMS\Serializer\Serializer;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
-
-class AppscoClient
+class AccountsClient
 {
     /** @var  HttpClientInterface */
     protected $httpClient;
@@ -62,7 +64,7 @@ class AppscoClient
 
     /**
      * @param string $accessToken
-     * @return $this|AppscoClient
+     * @return $this|AccountsClient
      */
     public function setAccessToken($accessToken)
     {
@@ -80,7 +82,7 @@ class AppscoClient
 
     /**
      * @param string $clientId
-     * @return $this|AppscoClient
+     * @return $this|AccountsClient
      */
     public function setClientId($clientId)
     {
@@ -98,7 +100,7 @@ class AppscoClient
 
     /**
      * @param string $clientSecret
-     * @return $this|AppscoClient
+     * @return $this|AccountsClient
      */
     public function setClientSecret($clientSecret)
     {
@@ -116,7 +118,7 @@ class AppscoClient
 
     /**
      * @param string $redirectUri
-     * @return $this|AppscoClient
+     * @return $this|AccountsClient
      */
     public function setDefaultRedirectUri($redirectUri)
     {
@@ -182,7 +184,7 @@ class AppscoClient
         );
 
         /** @var AccessData $result */
-        $result = $this->serializer->deserialize($json, 'Appsco\Accounts\Api\Model\AccessData', 'json');
+        $result = $this->serializer->deserialize($json, 'Appsco\Accounts\ApiBundle\Model\AccessData', 'json');
 
         $this->setAccessToken($result->getAccessToken());
 
@@ -198,13 +200,32 @@ class AppscoClient
     {
         $json = $this->get(sprintf('%s://%s%s/api/v1/profile/%s', $this->scheme, $this->domain, $this->sufix, $id));
 
-        return $this->serializer->deserialize($json, 'Appsco\Accounts\Api\Model\Profile', 'json');
+        return $this->serializer->deserialize($json, 'Appsco\Accounts\ApiBundle\Model\Profile', 'json');
     }
 
+
+    /**
+     * @param $clientId
+     * @return CertificateList
+     */
+    public function certificateGet($clientId)
+    {
+        $json = $this->httpClient->post(
+            sprintf('%s://%s%s/api/v1/certificate/%s', $this->scheme, $this->domain, $this->sufix, $clientId),
+            array(),
+            array(
+                'client_id' => $this->getClientId(),
+                'client_secret' => $this->getClientSecret()
+            )
+        );
+
+        return $this->serializer->deserialize($json, 'Appsco\Accounts\ApiBundle\Model\CertificateList', 'json');
+    }
 
 
     /**
      * @param string $url
+     * @throws \Symfony\Component\HttpKernel\Exception\HttpException
      * @return string
      */
     protected function get($url)
@@ -218,6 +239,10 @@ class AppscoClient
                 'Authorization: token '.$this->accessToken,
             )
         );
+
+        if ($this->httpClient->getStatusCode() != HttpStatusCode::OK) {
+            throw new HttpException($this->httpClient->getStatusCode(), $json);
+        }
 
         return $json;
     }

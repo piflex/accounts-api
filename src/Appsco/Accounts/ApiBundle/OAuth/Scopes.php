@@ -1,6 +1,6 @@
 <?php
 
-namespace Appsco\Accounts\Api\OAuth;
+namespace Appsco\Accounts\ApiBundle\OAuth;
 
 final class Scopes
 {

@@ -1,0 +1,32 @@
+parameters:
+    appsco_accounts_api.url.scheme: https
+    appsco_accounts_api.url.domain: accounts.appsco.com
+    appsco_accounts_api.url.sufix: ''
+    appsco_accounts_api.default_redirect_uri: ''
+    appsco_accounts_api.client_id: ''
+    appsco_accounts_api.client_secret: ''
+
+services:
+    appsco_accounts_api.http_client:
+        class: BWC\Share\Net\HttpClient\HttpClient
+        public: false
+
+    appsco_accounts_api.client:
+        class: Appsco\Accounts\ApiBundle\Client\AccountsClient
+        arguments:
+            - @appsco_accounts_api.http_client
+            - @jms_serializer
+            - %appsco_accounts_api.url.scheme%
+            - %appsco_accounts_api.url.domain%
+            - %appsco_accounts_api.url.sufix%
+            - %appsco_accounts_api.default_redirect_uri%
+            - %appsco_accounts_api.client_id%
+            - %appsco_accounts_api.client_secret%
+        public: false
+
+    appsco_accounts_api.oauth:
+        class: Appsco\Accounts\ApiBundle\OAuth\AppscoOAuth
+        arguments:
+            - @appsco_accounts_api.client
+            - @session
+        public: false
