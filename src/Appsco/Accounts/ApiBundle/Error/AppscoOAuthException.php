@@ -1,6 +1,6 @@
 <?php
 
-namespace Appsco\Accounts\Api\OAuth;
+namespace Appsco\Accounts\ApiBundle\Error;
 
 class AppscoOAuthException extends \RuntimeException
 {
@@ -21,5 +21,4 @@ class AppscoOAuthException extends \RuntimeException
     {
         return $this->error;
     }
-
 } 

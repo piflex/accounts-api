@@ -3,6 +3,7 @@
 namespace Appsco\Accounts\ApiBundle\OAuth;
 
 use Appsco\Accounts\ApiBundle\Client\AccountsClient;
+use Appsco\Accounts\ApiBundle\Error\AppscoOAuthException;
 use Appsco\Accounts\ApiBundle\Model\Profile;
 use Appsco\Accounts\ApiBundle\Security\Core\Authentication\AppscoToken;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -32,9 +33,8 @@ class AppscoOAuth implements AppscoOAuthInterface
     }
 
 
-
     /**
-     * @return \Appsco\Accounts\Api\AppscoClient
+     * @return AccountsClient
      */
     public function getClient()
     {

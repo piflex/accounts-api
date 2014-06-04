@@ -1,15 +1,16 @@
 <?php
 
-namespace Appsco\Accounts\Api\OAuth;
+namespace Appsco\Accounts\ApiBundle\OAuth;
 
-use Appsco\Accounts\Api\Security\Core\Authentication\AppscoToken;
+use Appsco\Accounts\ApiBundle\Error\AppscoOAuthException;
+use Appsco\Accounts\Apibundle\Security\Core\Authentication\AppscoToken;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 interface AppscoOAuthInterface
 {
     /**
-     * @return \Appsco\Accounts\Api\AppscoClient
+     * @return \Appsco\Accounts\ApiBundle\Client\AccountsClient
      */
     public function getClient();
 
