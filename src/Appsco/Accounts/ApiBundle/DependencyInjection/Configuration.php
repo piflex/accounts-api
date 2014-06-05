@@ -20,8 +20,8 @@ class Configuration implements ConfigurationInterface
             ->scalarNode('domain')->defaultValue('https')->cannotBeEmpty()->end()
             ->scalarNode('sufix')->defaultValue('')->end()
             ->scalarNode('default_redirect_uri')->defaultValue('')->end()
-            ->scalarNode('client_id')->cannotBeEmpty()->end()
-            ->scalarNode('client_secret')->cannotBeEmpty()->end()
+            ->scalarNode('client_id')->defaultValue('')->end()
+            ->scalarNode('client_secret')->defaultValue('')->end()
         ->end();
 
         return $treeBuilder;
