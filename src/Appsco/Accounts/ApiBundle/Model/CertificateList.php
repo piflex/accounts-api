@@ -22,7 +22,32 @@ class CertificateList
      * @var array|Certificate[]
      * @JMS\Type("array<Appsco\Accounts\ApiBundle\Model\Certificate>")
      */
-    protected $certificates;
+    protected $certificates = array();
+
+
+    /**
+     * @param string|null $clientId
+     * @param string|null $ownerId
+     * @param array $certificates
+     */
+    public function __construct($clientId = null, $ownerId = null, array $certificates = array())
+    {
+        $this->certificates = $certificates;
+        $this->clientId = $clientId;
+        $this->ownerId = $ownerId;
+    }
+
+
+    /**
+     * @param Certificate $certificate
+     * @return $this|CertificateList
+     */
+    public function add(Certificate $certificate)
+    {
+        $this->certificates[] = $certificate;
+
+        return $this;
+    }
 
 
     /**
@@ -49,6 +74,34 @@ class CertificateList
         return $this->ownerId;
     }
 
+    /**
+     * @param \Appsco\Accounts\ApiBundle\Model\Certificate[]|array $certificates
+     * @return $this|CertificateList
+     */
+    public function setCertificates($certificates)
+    {
+        $this->certificates = $certificates;
+        return $this;
+    }
 
+    /**
+     * @param string $clientId
+     * @return $this|CertificateList
+     */
+    public function setClientId($clientId)
+    {
+        $this->clientId = $clientId;
+        return $this;
+    }
+
+    /**
+     * @param int $ownerId
+     * @return $this|CertificateList
+     */
+    public function setOwnerId($ownerId)
+    {
+        $this->ownerId = $ownerId;
+        return $this;
+    }
 
 } 
