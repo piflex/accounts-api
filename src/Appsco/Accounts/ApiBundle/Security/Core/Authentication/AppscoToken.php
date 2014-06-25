@@ -7,16 +7,27 @@ use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
 
 class AppscoToken extends AbstractToken
 {
+    /** @var  string */
+    protected $accessToken;
+
+    /** @var  string */
+    protected $idToken;
+
 
     /**
      * @param Profile $user
      * @param array $roles
+     * @param string|null $accessToken
+     * @param string|null $idToken
      */
-    public function __construct($user, array $roles = array())
+    public function __construct($user, array $roles = array(), $accessToken = null, $idToken = null)
     {
         parent::__construct($roles);
 
         $this->setUser($user);
+
+        $this->accessToken = $accessToken;
+        $this->idToken = $idToken;
 
         parent::setAuthenticated(count($roles) > 0);
     }
@@ -43,6 +54,27 @@ class AppscoToken extends AbstractToken
     {
         return '';
     }
+
+
+
+    /**
+     * @return string
+     */
+    public function getAccessToken()
+    {
+        return $this->accessToken;
+    }
+
+    /**
+     * @return string
+     */
+    public function getIdToken()
+    {
+        return $this->idToken;
+    }
+
+
+
 
 
     /**

@@ -24,6 +24,12 @@ class AccessData
      */
     protected $tokenType;
 
+    /**
+     * @var string
+     * @JMS\Type("string")
+     */
+    protected $idToken;
+
 
 
     /**
@@ -78,6 +84,24 @@ class AccessData
     public function getTokenType()
     {
         return $this->tokenType;
+    }
+
+    /**
+     * @param string $idToken
+     * @return $this|AccessData
+     */
+    public function setIdToken($idToken)
+    {
+        $this->idToken = $idToken;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getIdToken()
+    {
+        return $this->idToken;
     }
 
 

@@ -4,6 +4,7 @@ namespace Appsco\Accounts\ApiBundle\OAuth;
 
 use Appsco\Accounts\ApiBundle\Client\AccountsClient;
 use Appsco\Accounts\ApiBundle\Error\AppscoOAuthException;
+use Appsco\Accounts\ApiBundle\Model\AccessData;
 use Appsco\Accounts\ApiBundle\Model\Profile;
 use Appsco\Accounts\ApiBundle\Security\Core\Authentication\AppscoToken;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -75,14 +76,14 @@ class AppscoOAuth implements AppscoOAuthInterface
         $this->validateState($state);
         $this->checkError($request);
 
-        $this->client->getAccessData($code, $redirectUri);
+        $accessData = $this->client->getAccessData($code, $redirectUri);
         $profile = $this->client->profileRead('me');
 
         if (false == $profile) {
             throw new AuthenticationException('Unable to get profile info from Appsco');
         }
 
-        return $this->createToken($profile);
+        return $this->createToken($accessData, $profile);
     }
 
 
@@ -128,12 +129,14 @@ class AppscoOAuth implements AppscoOAuthInterface
     }
 
     /**
+     * @param \Appsco\Accounts\ApiBundle\Model\AccessData $accessData
      * @param \Appsco\Accounts\ApiBundle\Model\Profile $profile
      * @return AppscoToken
      */
-    protected function createToken(Profile $profile)
+    protected function createToken(AccessData $accessData, Profile $profile)
     {
-        return new AppscoToken($profile);
+        $result = new AppscoToken($profile, array(), $accessData->getAccessToken(), $accessData->getIdToken());
+        return $result;
     }
 
 } 
