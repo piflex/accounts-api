@@ -63,7 +63,7 @@ class AccountsClient
         $this->defaultRedirectUri = $defaultRedirectUri;
         $this->clientId = $clientId;
         $this->clientSecret = $clientSecret;
-        $this->logger = null;
+        $this->logger = $logger;
     }
 
 
