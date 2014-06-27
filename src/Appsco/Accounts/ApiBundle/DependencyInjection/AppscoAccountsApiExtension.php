@@ -27,6 +27,7 @@ class AppscoAccountsApiExtension extends Extension
         $container->setParameter('appsco_accounts_api.client_id', $config['client_id']);
         $container->setParameter('appsco_accounts_api.client_secret', $config['client_secret']);
         $container->setParameter('appsco_accounts_api.ca_path', $config['ca_path']);
+        $container->setParameter('appsco_accounts_api.loose_ssl', $config['loose_ssl']);
     }
 
 } 

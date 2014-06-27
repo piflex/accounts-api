@@ -6,13 +6,14 @@ parameters:
     appsco_accounts_api.client_id: ''
     appsco_accounts_api.client_secret: ''
     appsco_accounts_api.ca_path: /usr/lib/ssl/certs
+    appsco_accounts_api.loose_ssl: false
 
 services:
     appsco_accounts_api.http_client:
         class: BWC\Share\Net\HttpClient\HttpClient
         calls:
             - [ setCaPath, [%appsco_accounts_api.ca_path%] ]
-            - [ looseSslCheck, [%kernel.debug%] ]
+            - [ looseSslCheck, [%appsco_accounts_api.loose_ssl%] ]
         public: false
 
     appsco_accounts_api.client:
