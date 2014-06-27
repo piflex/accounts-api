@@ -204,7 +204,13 @@ class AccountsClient
         if ($this->logger) {
             $this->logger->info('Appsco.AccountsClient.getAccessData', array(
                 'result' => $json,
+                'statusCode' => $this->httpClient->getStatusCode(),
             ));
+        }
+
+        if ($json === false || $this->httpClient->getStatusCode() != HttpStatusCode::OK) {
+            throw new HttpException($this->httpClient->getStatusCode(), sprintf("%s\n%s\n%s\n%s",
+                $url, $this->accessToken, $this->httpClient->getErrorText(), $json));
         }
 
         /** @var AccessData $result */
@@ -218,6 +224,7 @@ class AccountsClient
 
     /**
      * @param string $id
+     * @throws \Symfony\Component\HttpKernel\Exception\HttpException
      * @return Profile
      */
     public function profileRead($id = 'me')
@@ -236,8 +243,14 @@ class AccountsClient
 
         if ($this->logger) {
             $this->logger->info('Appsco.AccountsClient.profileRead', array(
-                'result' => $json
+                'result' => $json,
+                'statusCode' => $this->httpClient->getStatusCode(),
             ));
+        }
+
+        if ($json || $this->httpClient->getStatusCode() != HttpStatusCode::OK) {
+            throw new HttpException($this->httpClient->getStatusCode(), sprintf("%s\n%s\n%s\n%s",
+                $url, $this->accessToken, $this->httpClient->getErrorText(), $json));
         }
 
         return $this->serializer->deserialize($json, 'Appsco\Accounts\ApiBundle\Model\Profile', 'json');
@@ -291,8 +304,9 @@ class AccountsClient
             )
         );
 
-        if ($this->httpClient->getStatusCode() != HttpStatusCode::OK) {
-            throw new HttpException($this->httpClient->getStatusCode(), sprintf("%s\n%s\n%s", $url, $this->accessToken, $json));
+        if ($json || $this->httpClient->getStatusCode() != HttpStatusCode::OK) {
+            throw new HttpException($this->httpClient->getStatusCode(), sprintf("%s\n%s\n%s\n%s",
+                $url, $this->accessToken, $this->httpClient->getErrorText(), $json));
         }
 
         return $json;
