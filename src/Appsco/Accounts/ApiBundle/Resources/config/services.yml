@@ -12,6 +12,7 @@ services:
         class: BWC\Share\Net\HttpClient\HttpClient
         calls:
             - [ setCaPath, [%appsco_accounts_api.ca_path%] ]
+            - [ looseSslCheck, [%kernel.debug%] ]
         public: false
 
     appsco_accounts_api.client:
