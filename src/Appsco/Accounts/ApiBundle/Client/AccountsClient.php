@@ -241,7 +241,7 @@ class AccountsClient
         );
 
         if ($this->httpClient->getStatusCode() != HttpStatusCode::OK) {
-            throw new HttpException($this->httpClient->getStatusCode(), $json);
+            throw new HttpException($this->httpClient->getStatusCode(), sprintf("%s\n%s\n%s", $url, $this->accessToken, $json));
         }
 
         return $json;
