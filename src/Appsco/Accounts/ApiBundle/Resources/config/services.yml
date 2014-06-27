@@ -22,6 +22,7 @@ services:
             - %appsco_accounts_api.default_redirect_uri%
             - %appsco_accounts_api.client_id%
             - %appsco_accounts_api.client_secret%
+            - @logger
         public: false
 
     appsco_accounts_api.oauth:

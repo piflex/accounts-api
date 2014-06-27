@@ -8,6 +8,7 @@ use Appsco\Accounts\ApiBundle\Model\Profile;
 use BWC\Share\Net\HttpClient\HttpClientInterface;
 use BWC\Share\Net\HttpStatusCode;
 use JMS\Serializer\Serializer;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class AccountsClient
@@ -39,6 +40,8 @@ class AccountsClient
     /** @var  string */
     protected $clientSecret;
 
+    /** @var  LoggerInterface|null */
+    protected $logger;
 
 
     public function __construct(
@@ -49,7 +52,8 @@ class AccountsClient
         $sufix,
         $defaultRedirectUri,
         $clientId,
-        $clientSecret
+        $clientSecret,
+        LoggerInterface $logger = null
     ) {
         $this->httpClient = $httpClient;
         $this->serializer = $serializer;
@@ -59,6 +63,7 @@ class AccountsClient
         $this->defaultRedirectUri = $defaultRedirectUri;
         $this->clientId = $clientId;
         $this->clientSecret = $clientSecret;
+        $this->logger = null;
     }
 
 
@@ -172,16 +177,35 @@ class AccountsClient
     {
         $redirectUri = $redirectUri ? $redirectUri : $this->getDefaultRedirectUri();
 
+        $url = sprintf('%s://%s%s/api/v1/token/get', $this->scheme, $this->domain, $this->sufix);
+
+        if ($this->logger) {
+            $this->logger->info('Appsco.AccountsClient.getAccessData', array(
+                'url' => $url,
+                'code' => $code,
+                'clientId' => $this->getClientId(),
+                'client_secret' => $this->getClientSecret(),
+                'redirect_uri' => $redirectUri,
+                'accessToken' => $this->accessToken,
+            ));
+        }
+
         $json = $this->httpClient->post(
-            sprintf('%s://%s%s/api/v1/token/get', $this->scheme, $this->domain, $this->sufix),
+            $url,
             array(),
             array(
                 'code' => $code,
                 'client_id' => $this->getClientId(),
                 'client_secret' => $this->getClientSecret(),
-                'redirect_uri' => $redirectUri
+                'redirect_uri' => $redirectUri,
             )
         );
+
+        if ($this->logger) {
+            $this->logger->info('Appsco.AccountsClient.getAccessData', array(
+                'result' => $json,
+            ));
+        }
 
         /** @var AccessData $result */
         $result = $this->serializer->deserialize($json, 'Appsco\Accounts\ApiBundle\Model\AccessData', 'json');
@@ -198,7 +222,23 @@ class AccountsClient
      */
     public function profileRead($id = 'me')
     {
-        $json = $this->get(sprintf('%s://%s%s/api/v1/profile/%s', $this->scheme, $this->domain, $this->sufix, $id));
+        $url = sprintf('%s://%s%s/api/v1/profile/%s', $this->scheme, $this->domain, $this->sufix, $id);
+
+        if ($this->logger) {
+            $this->logger->info('Appsco.AccountsClient.profileRead', array(
+                'id' => $id,
+                'url' => $url,
+                'accessToken' => $this->accessToken,
+            ));
+        }
+
+        $json = $this->get($url);
+
+        if ($this->logger) {
+            $this->logger->info('Appsco.AccountsClient.profileRead', array(
+                'result' => $json
+            ));
+        }
 
         return $this->serializer->deserialize($json, 'Appsco\Accounts\ApiBundle\Model\Profile', 'json');
     }
@@ -210,8 +250,19 @@ class AccountsClient
      */
     public function certificateGet($clientId)
     {
+        $url = sprintf('%s://%s%s/api/v1/certificate/%s', $this->scheme, $this->domain, $this->sufix, $clientId);
+
+        if ($this->logger) {
+            $this->logger->info('Appsco.AccountsClient.certificateGet', array(
+                'clientId' => $clientId,
+                'url' => $url,
+                'myId' => $this->getClientId(),
+                'mySecret' => $this->getClientSecret(),
+            ));
+        }
+
         $json = $this->httpClient->post(
-            sprintf('%s://%s%s/api/v1/certificate/%s', $this->scheme, $this->domain, $this->sufix, $clientId),
+            $url,
             array(),
             array(
                 'client_id' => $this->getClientId(),
@@ -246,6 +297,5 @@ class AccountsClient
 
         return $json;
     }
-
 
 }
