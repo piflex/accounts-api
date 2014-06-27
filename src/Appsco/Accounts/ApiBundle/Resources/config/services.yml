@@ -5,10 +5,13 @@ parameters:
     appsco_accounts_api.default_redirect_uri: ''
     appsco_accounts_api.client_id: ''
     appsco_accounts_api.client_secret: ''
+    appsco_accounts_api.ca_path: /usr/lib/ssl/certs
 
 services:
     appsco_accounts_api.http_client:
         class: BWC\Share\Net\HttpClient\HttpClient
+        calls:
+            - [ setCaPath, [%appsco_accounts_api.ca_path%] ]
         public: false
 
     appsco_accounts_api.client:

@@ -22,6 +22,7 @@ class Configuration implements ConfigurationInterface
             ->scalarNode('default_redirect_uri')->defaultValue('')->end()
             ->scalarNode('client_id')->defaultValue('')->end()
             ->scalarNode('client_secret')->defaultValue('')->end()
+            ->scalarNode('ca_path')->defaultValue('/usr/lib/ssl/certs')->end()
         ->end();
 
         return $treeBuilder;

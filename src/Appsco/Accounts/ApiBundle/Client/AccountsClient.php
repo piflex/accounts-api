@@ -248,7 +248,7 @@ class AccountsClient
             ));
         }
 
-        if ($json || $this->httpClient->getStatusCode() != HttpStatusCode::OK) {
+        if ($json === false || $this->httpClient->getStatusCode() != HttpStatusCode::OK) {
             throw new HttpException($this->httpClient->getStatusCode(), sprintf("%s\n%s\n%s\n%s",
                 $url, $this->accessToken, $this->httpClient->getErrorText(), $json));
         }
@@ -304,7 +304,7 @@ class AccountsClient
             )
         );
 
-        if ($json || $this->httpClient->getStatusCode() != HttpStatusCode::OK) {
+        if ($json === false || $this->httpClient->getStatusCode() != HttpStatusCode::OK) {
             throw new HttpException($this->httpClient->getStatusCode(), sprintf("%s\n%s\n%s\n%s",
                 $url, $this->accessToken, $this->httpClient->getErrorText(), $json));
         }

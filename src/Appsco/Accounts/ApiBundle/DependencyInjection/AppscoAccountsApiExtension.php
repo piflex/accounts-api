@@ -26,6 +26,7 @@ class AppscoAccountsApiExtension extends Extension
         $container->setParameter('appsco_accounts_api.default_redirect_uri', $config['default_redirect_uri']);
         $container->setParameter('appsco_accounts_api.client_id', $config['client_id']);
         $container->setParameter('appsco_accounts_api.client_secret', $config['client_secret']);
+        $container->setParameter('appsco_accounts_api.ca_path', $config['ca_path']);
     }
 
 } 
