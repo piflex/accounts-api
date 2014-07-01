@@ -18,7 +18,7 @@ class Configuration implements ConfigurationInterface
 
         $root->children()
             ->scalarNode('scheme')->defaultValue('https')->cannotBeEmpty()->end()
-            ->scalarNode('domain')->defaultValue('https')->cannotBeEmpty()->end()
+            ->scalarNode('domain')->defaultValue('accounts.dev.appsco.com')->cannotBeEmpty()->end()
             ->scalarNode('sufix')->defaultValue('')->end()
             ->scalarNode('default_redirect_uri')->defaultValue('')->end()
             ->scalarNode('client_id')->defaultValue('')->end()
