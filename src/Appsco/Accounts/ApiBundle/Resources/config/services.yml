@@ -7,6 +7,7 @@ parameters:
     appsco_accounts_api.client_secret: ''
     appsco_accounts_api.ca_path: /usr/lib/ssl/certs
     appsco_accounts_api.loose_ssl: false
+    appsco_accounts_api.auth_type: 1
 
 services:
     appsco_accounts_api.http_client:
@@ -27,6 +28,7 @@ services:
             - %appsco_accounts_api.default_redirect_uri%
             - %appsco_accounts_api.client_id%
             - %appsco_accounts_api.client_secret%
+            - %appsco_accounts_api.auth_type%
             - @logger
         public: false
 

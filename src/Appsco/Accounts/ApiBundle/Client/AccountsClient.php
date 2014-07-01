@@ -5,14 +5,22 @@ namespace Appsco\Accounts\ApiBundle\Client;
 use Appsco\Accounts\ApiBundle\Model\AccessData;
 use Appsco\Accounts\ApiBundle\Model\CertificateList;
 use Appsco\Accounts\ApiBundle\Model\Profile;
+use Appsco\Accounts\ApiBundle\Model\User;
 use BWC\Share\Net\HttpClient\HttpClientInterface;
 use BWC\Share\Net\HttpStatusCode;
 use JMS\Serializer\Serializer;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\Security\Core\Exception\RuntimeException;
+use Symfony\Component\Serializer\Exception\LogicException;
 
 class AccountsClient
 {
+    const AUTH_TYPE_ACCESS_TOKEN = 1;
+    const AUTH_TYPE_BASIC_AUTH = 2;
+    const AUTH_TYPE_REQUEST = 3;
+
+
     /** @var  HttpClientInterface */
     protected $httpClient;
 
@@ -43,6 +51,8 @@ class AccountsClient
     /** @var  LoggerInterface|null */
     protected $logger;
 
+    /** @var integer */
+    protected $authType;
 
     public function __construct(
         HttpClientInterface $httpClient,
@@ -53,6 +63,7 @@ class AccountsClient
         $defaultRedirectUri,
         $clientId,
         $clientSecret,
+        $authType,
         LoggerInterface $logger = null
     ) {
         $this->httpClient = $httpClient;
@@ -63,6 +74,7 @@ class AccountsClient
         $this->defaultRedirectUri = $defaultRedirectUri;
         $this->clientId = $clientId;
         $this->clientSecret = $clientSecret;
+        $this->authType = $authType;
         $this->logger = $logger;
     }
 
@@ -139,6 +151,23 @@ class AccountsClient
         return $this->defaultRedirectUri;
     }
 
+    /**
+     * @param int $authType
+     * @return $this
+     */
+    public function setAuthType($authType)
+    {
+        $this->authType = $authType;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getAuthType()
+    {
+        return $this->authType;
+    }
 
     /**
      * @param string $state
@@ -190,15 +219,14 @@ class AccountsClient
             ));
         }
 
-        $json = $this->httpClient->post(
+        $json = $this->makeRequest(
             $url,
-            array(),
-            array(
+            'get',
+            [
                 'code' => $code,
                 'client_id' => $this->getClientId(),
-                'client_secret' => $this->getClientSecret(),
-                'redirect_uri' => $redirectUri,
-            )
+                'redirect_uri' => $redirectUri
+            ]
         );
 
         if ($this->logger) {
@@ -239,7 +267,7 @@ class AccountsClient
             ));
         }
 
-        $json = $this->get($url);
+        $json = $this->makeRequest($url);
 
         if ($this->logger) {
             $this->logger->info('Appsco.AccountsClient.profileRead', array(
@@ -256,6 +284,17 @@ class AccountsClient
         return $this->serializer->deserialize($json, 'Appsco\Accounts\ApiBundle\Model\Profile', 'json');
     }
 
+    /**
+     * @return User[]
+     */
+    public function listUsers()
+    {
+        $json = $this->makeRequest(
+            sprintf('%s://%s%s/api/v1/user/list', $this->scheme, $this->domain, $this->sufix)
+        );
+
+        return $this->serializer->deserialize($json, "array<Appsco\Accounts\ApiBundle\Model\User>", 'json');
+    }
 
     /**
      * @param $clientId
@@ -274,42 +313,88 @@ class AccountsClient
             ));
         }
 
-        $json = $this->httpClient->post(
+        $json = $this->httpClient->makeRequest(
             $url,
-            array(),
-            array(
-                'client_id' => $this->getClientId(),
-                'client_secret' => $this->getClientSecret()
-            )
+            'get'
         );
 
         return $this->serializer->deserialize($json, 'Appsco\Accounts\ApiBundle\Model\CertificateList', 'json');
     }
 
-
     /**
      * @param string $url
-     * @throws \Symfony\Component\HttpKernel\Exception\HttpException
+     * @param string $method
+     * @param array $queryData
+     * @param array $postData
+     * @param null $contentType
+     * @param array $arrHeaders
      * @return string
+     * @throws LogicException
+     * @throws HttpException
      */
-    protected function get($url)
+    protected function makeRequest(
+        $url,
+        $method = 'post',
+        array $queryData = array(),
+        array $postData = array(),
+        $contentType = null,
+        array $arrHeaders = array()
+    )
     {
-        $json = $this->httpClient->get(
-            $url,
-            array(),
-            array(
-                sprintf('Host: %s', $this->domain),
-                'Content-length: 0',
-                'Authorization: token '.$this->accessToken,
-            )
-        );
+        $this->prepareRequest($arrHeaders, $postData);
+        switch($method){
+            case 'post':
+                $json = $this->httpClient->post($url, $queryData, $postData, $contentType, $arrHeaders);
+                break;
+            case 'get':
+                $json = $this->httpClient->get($url, $queryData, $arrHeaders);
+                break;
+            case 'delete':
+                $json = $this->httpClient->delete($url, $queryData, $arrHeaders);
+                break;
+            default:
+                throw new LogicException("Method is not supported [{$method}]");
+        }
 
-        if ($json === false || $this->httpClient->getStatusCode() != HttpStatusCode::OK) {
-            throw new HttpException($this->httpClient->getStatusCode(), sprintf("%s\n%s\n%s\n%s",
-                $url, $this->accessToken, $this->httpClient->getErrorText(), $json));
+        if ($this->httpClient->getStatusCode() != HttpStatusCode::OK) {
+            throw new HttpException($this->httpClient->getStatusCode(), $json);
         }
 
         return $json;
+    }
+
+    /**
+     * @param $arrHeaders
+     * @param $postData
+     * @throws RuntimeException
+     * @throws LogicException
+     */
+    private function prepareRequest(&$arrHeaders, &$postData)
+    {
+        switch($this->authType)
+        {
+            case self::AUTH_TYPE_ACCESS_TOKEN:
+                if(!$this->accessToken){
+                    throw new RuntimeException('Access Token must be set');
+                }
+                $arrHeaders[] = 'Authorization: token '.$this->accessToken;
+                break;
+            case self::AUTH_TYPE_BASIC_AUTH:
+                if(!$this->clientId || !$this->clientSecret){
+                    throw new RuntimeException('ClientId and ClientSecret Must be set');
+                }
+                $this->httpClient->setCredentials($this->getClientId(), $this->getClientSecret());
+                break;
+            case self::AUTH_TYPE_REQUEST:
+                if(!$this->clientId || !$this->clientSecret){
+                    throw new RuntimeException('ClientId and ClientSecret Must be set');
+                }
+                $postData['client_id'] = $this->getClientId();
+                $postData['client_secret'] = $this->getClientSecret();
+                break;
+            default:
+                throw new LogicException("Auth Type not supported [{$this->authType}]!");
+        }
     }
 
 }

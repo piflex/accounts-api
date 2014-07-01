@@ -2,6 +2,7 @@
 
 namespace Appsco\Accounts\ApiBundle\DependencyInjection;
 
+use Appsco\Accounts\ApiBundle\Client\AccountsClient;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -24,6 +25,7 @@ class Configuration implements ConfigurationInterface
             ->scalarNode('client_secret')->defaultValue('')->end()
             ->scalarNode('ca_path')->defaultValue('/usr/lib/ssl/certs')->end()
             ->booleanNode('loose_ssl')->defaultValue(false)->end()
+            ->scalarNode('auth_type')->defaultValue(AccountsClient::AUTH_TYPE_ACCESS_TOKEN)->end()
         ->end();
 
         return $treeBuilder;
