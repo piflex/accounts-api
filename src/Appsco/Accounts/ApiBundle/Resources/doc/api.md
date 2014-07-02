@@ -19,7 +19,7 @@ Response
     "id": 123,
     "email": "john.smith@example.com",
     "first_name": "John",
-    "last_name: "Smith",
+    "last_name": "Smith",
     "locale": "en",
     "timezone": "Europe/Oslo",
     "gender": "m",
@@ -57,7 +57,7 @@ Response
             "id": 123,
             "email": "john.smith@example.com",
             "first_name": "John",
-            "last_name: "Smith",
+            "last_name": "Smith",
             "locale": "en",
             "timezone": "Europe/Oslo",
             "gender": "m",
@@ -67,8 +67,7 @@ Response
             "phone": "00123123123",
             "picture_url": "https://accounts.dev.appsco.com/picture/123"
         }
-    },
-    ...
+    }
 ]
 ```
 
@@ -93,9 +92,8 @@ Response:
         {
             "valid_from": "2014-07-02",
             "valid_to: "2015-07-01",
-            "certificate": "-----BEGIN CERTIFICATE-----\nMIIEZDCCA0ygAwIBAgIBADANBgkqhkiG9w0BAQsFADCBgjELMAkGA1UEBhMCTk8x..."
-        },
-        ...
+            "certificate": "-----BEGIN CERTIFICATE-----\nMIIEZDCCA0ygAwIBAgIBADANB..."
+        }
     ]
 }
 ```

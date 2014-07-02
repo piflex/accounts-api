@@ -75,8 +75,8 @@ The response will take the following form
 }
 ```
 
-3. Use the access token to access the Appsco Accounts API
----------------------------------------------------------
+3. Use the access token to access the API
+-----------------------------------------
 
 The obtained access token allows you to make requests to the Appsco Accounts API on behalf of the user that gave
 you the authorization.
