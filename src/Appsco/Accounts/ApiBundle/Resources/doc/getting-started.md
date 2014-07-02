@@ -26,7 +26,7 @@ Add appsco/accounts-api to your ```composer.json``` requirements:
 ``` json
 {
     "require": {
-        "aerialship/saml-sp-bundle": "dev-master"
+        "appsco/accounts-api": "dev-master"
     }
 }
 ```
