@@ -10,8 +10,6 @@ All applications has to be registered on [Appsco Accounts](https://accounts.dev.
 to use its API. Each registered app is given a unique Client ID and Client Secret. The Client Secret should not be
 shared and given to any third parties.
 
-[![Appsco Accounts OAuth](oauth.svg)
-
 Reference
 ---------
 
