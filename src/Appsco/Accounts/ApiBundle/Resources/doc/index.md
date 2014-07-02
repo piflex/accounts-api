@@ -1,5 +1,8 @@
 Appsco Accounts API
 ===================
 
-* [Installation](installation.md)
+* [Getting Started](getting-started.md)
 * [Configuration Reference](configuration.md)
+* [OAuth details](oauth.md)
+* [API Method](api.md)
+

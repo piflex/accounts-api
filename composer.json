@@ -7,7 +7,7 @@
         "psr-0": { "Appsco\\Accounts\\ApiBundle\\": "src/" }
     }, 
     "require": {
-        "symfony/symfony": "~2.4",
+        "symfony/symfony": "~2.3",
         "jms/serializer-bundle": "~0.13",
         "appsco/component-share": "*"
     }
