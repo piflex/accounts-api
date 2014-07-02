@@ -6,6 +6,7 @@ use Appsco\Accounts\ApiBundle\Model\AccessData;
 use Appsco\Accounts\ApiBundle\Model\CertificateList;
 use Appsco\Accounts\ApiBundle\Model\Profile;
 use Appsco\Accounts\ApiBundle\Model\User;
+use Appsco\Dashboard\Ket\MainBundle\Model\AuthType;
 use BWC\Share\Net\HttpClient\HttpClientInterface;
 use BWC\Share\Net\HttpStatusCode;
 use JMS\Serializer\Serializer;
@@ -218,17 +219,18 @@ class AccountsClient
                 'accessToken' => $this->accessToken,
             ));
         }
-
+        $old = $this->getAuthType();
+        $this->setAuthType(self::AUTH_TYPE_REQUEST);
         $json = $this->makeRequest(
             $url,
-            'get',
+            'post',
+            [],
             [
                 'code' => $code,
-                'client_id' => $this->getClientId(),
-                'redirect_uri' => $redirectUri
+                'redirect_uri' => $redirectUri,
             ]
         );
-
+        $this->setAuthType($old);
         if ($this->logger) {
             $this->logger->info('Appsco.AccountsClient.getAccessData', array(
                 'result' => $json,
