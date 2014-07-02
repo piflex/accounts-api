@@ -9,13 +9,12 @@ This version of bundle requires Symfony 2.3+
 Installation
 ------------
 
-Easy 6-7 steps:
- * Download appsco/accounts-api with composer
- * Load the bundle to kernel
- * Acquire your client_id and client_secret
- * Configure the AppscoAccountsApiBundle bundle
- * OAuth todo
- * ...
+Installation in quick 5 steps:
+1. Download appsco/accounts-api with composer
+2. Load the bundle to kernel
+3. Acquire your client_id and client_secret
+4. Configure the AppscoAccountsApiBundle bundle
+5. OAuth & user identity
 
 
 Step 1: Download appsco/accounts-api with composer
