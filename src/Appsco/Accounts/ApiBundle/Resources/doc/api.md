@@ -91,7 +91,7 @@ Response:
     "certificates": [
         {
             "valid_from": "2014-07-02",
-            "valid_to: "2015-07-01",
+            "valid_to": "2015-07-01",
             "certificate": "-----BEGIN CERTIFICATE-----\nMIIEZDCCA0ygAwIBAgIBADANB..."
         }
     ]
