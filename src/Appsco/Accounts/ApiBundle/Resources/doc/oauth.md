@@ -10,6 +10,8 @@ All applications has to be registered on [Appsco Accounts](https://accounts.dev.
 to use its API. Each registered app is given a unique Client ID and Client Secret. The Client Secret should not be
 shared and given to any third parties.
 
+![oauth](http://appsco.github.io/accounts-api/oauth.svg "OAuth")
+
 Reference
 ---------
 
@@ -115,30 +117,65 @@ Scopes
 Errors
 ======
 
+In case something went wrong during the OAuth process instead of expected parameters Appsco Accounts will redirect
+with the `error` and `error_description` parameters describing the error. Following are the common errors that might
+occur.
+
 Application Suspended
 ---------------------
 
-Lorem ipsum...
+If your application has been suspended (due to reported abuse, spam, or a mis-use of the API), Appsco Accounts will
+redirect to the registered callback URL with following parameters:
+
+   https://your-application.com/appsco-callback?error=application_suspended
+       &error_description=Your+application+has+been+suspended.+Contact+support@appsco.com
+       &state=123
 
 Redirect URI mismatch
 ---------------------
 
-Lorem ipsum...
+If you provide a `redirect_uri` that does not match with the data from registered application, Appsco Accounts will
+redirect to the registered callback URL with following parameters:
+
+   https://your-application.com/appsco-callback?error=redirect_uri_mismatch
+       &error_description=The+redirect_uri+MUST+match+the+registered+callback+URL+for+this+application.
+       &state=123
+
 
 Access denied
 -------------
 
-Lorem ipsum...
+If the user rejects access to your application, Appsco Accounts will redirect to the registered callback URL
+with following parameters:
+
+   https://your-application.com/appsco-callback?error=access_denied
+       &error_description=The+user+has+denied+your+application+access.
+       &state=123
 
 
 Incorrect client credentials
 ----------------------------
 
-Lorem ipsum...
+If provided `client_id` and `client_secret` does not match to those of the registered application, you will receive
+this error response:
+
+``` json
+{
+    "error": "incorrect_client_credentials",
+    "error_description": "The client_id and/or client_secret passed are incorrect."
+}
+```
 
 
 Bad verification code
 ---------------------
 
-Lorem ipsum...
+If the temporary verification code passed in request to obtain access token is invalid or expired, you will receive
+this error response:
 
+``` json
+{
+    "error": "bad_verification_code",
+    "error_description": "The code passed is incorrect or expired."
+}
+```

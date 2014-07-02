@@ -104,7 +104,7 @@ class DefaultController extends Controller
     public function callbackAction(Request $request)
     {
         $token = $this->getAppscoOAuth()->callback($request);
-        return new Response("Hello {$token->getUser()->getEmail}!");
+        return new Response("Hello {$token->getUser()->getEmail()}!");
     }
 
     /**
@@ -118,6 +118,14 @@ class DefaultController extends Controller
 }
 
 ```
+
+For the profile object filed reference check the [Profile Read API method](api.md#Profile-Read) documentation.
+
+**Note:** The code above does not login that user into your application security context. It just returns the `Token`
+object. In order to login such user and the returned `Token` you should write your own Authentication Listener. The
+appsco/accounts-api in its current version does not implement Authentication Listener.
+
+
 
 Next steps
 ----------

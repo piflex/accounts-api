@@ -6,14 +6,11 @@ use Appsco\Accounts\ApiBundle\Model\AccessData;
 use Appsco\Accounts\ApiBundle\Model\CertificateList;
 use Appsco\Accounts\ApiBundle\Model\Profile;
 use Appsco\Accounts\ApiBundle\Model\User;
-use Appsco\Dashboard\Ket\MainBundle\Model\AuthType;
 use BWC\Share\Net\HttpClient\HttpClientInterface;
 use BWC\Share\Net\HttpStatusCode;
 use JMS\Serializer\Serializer;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpKernel\Exception\HttpException;
-use Symfony\Component\Security\Core\Exception\RuntimeException;
-use Symfony\Component\Serializer\Exception\LogicException;
 
 class AccountsClient
 {
@@ -201,6 +198,7 @@ class AccountsClient
     /**
      * @param string $code
      * @param string $redirectUri
+     * @throws \Symfony\Component\HttpKernel\Exception\HttpException
      * @return AccessData
      */
     public function getAccessData($code, $redirectUri = null)
@@ -219,8 +217,10 @@ class AccountsClient
                 'accessToken' => $this->accessToken,
             ));
         }
+
         $old = $this->getAuthType();
         $this->setAuthType(self::AUTH_TYPE_REQUEST);
+
         $json = $this->makeRequest(
             $url,
             'post',
@@ -230,7 +230,9 @@ class AccountsClient
                 'redirect_uri' => $redirectUri,
             ]
         );
+
         $this->setAuthType($old);
+
         if ($this->logger) {
             $this->logger->info('Appsco.AccountsClient.getAccessData', array(
                 'result' => $json,
@@ -299,7 +301,7 @@ class AccountsClient
     }
 
     /**
-     * @param $clientId
+     * @param string $clientId
      * @return CertificateList
      */
     public function certificateGet($clientId)
@@ -368,34 +370,37 @@ class AccountsClient
     /**
      * @param $arrHeaders
      * @param $postData
-     * @throws RuntimeException
-     * @throws LogicException
+     * @throws \RuntimeException
+     * @throws \LogicException
      */
     private function prepareRequest(&$arrHeaders, &$postData)
     {
         switch($this->authType)
         {
             case self::AUTH_TYPE_ACCESS_TOKEN:
-                if(!$this->accessToken){
-                    throw new RuntimeException('Access Token must be set');
+                if (false == $this->accessToken) {
+                    throw new \RuntimeException('Access Token must be set');
                 }
                 $arrHeaders[] = 'Authorization: token '.$this->accessToken;
                 break;
+
             case self::AUTH_TYPE_BASIC_AUTH:
-                if(!$this->clientId || !$this->clientSecret){
-                    throw new RuntimeException('ClientId and ClientSecret Must be set');
+                if (false == $this->clientId || false == $this->clientSecret) {
+                    throw new \RuntimeException('ClientId and ClientSecret Must be set');
                 }
                 $this->httpClient->setCredentials($this->getClientId(), $this->getClientSecret());
                 break;
+
             case self::AUTH_TYPE_REQUEST:
-                if(!$this->clientId || !$this->clientSecret){
-                    throw new RuntimeException('ClientId and ClientSecret Must be set');
+                if (false == $this->clientId || false == $this->clientSecret) {
+                    throw new \RuntimeException('ClientId and ClientSecret Must be set');
                 }
                 $postData['client_id'] = $this->getClientId();
                 $postData['client_secret'] = $this->getClientSecret();
                 break;
+
             default:
-                throw new LogicException("Auth Type not supported [{$this->authType}]!");
+                throw new \LogicException(sprintf("Invalid authentication type '%s'", $this->authType));
         }
     }
 

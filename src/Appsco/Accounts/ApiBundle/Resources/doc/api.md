@@ -1,6 +1,18 @@
 Appsco Accounts API Methods
 ===========================
 
+The Appsco Accounts API Bundle provides the PHP implementation of the client in the class
+
+    Appsco\Accounts\ApiBundle\Client\AccountsClient
+
+If you loaded the AppscoAccountsApiBundle to your kernel you can get it as a service from the container
+
+``` php
+/** @var \Appsco\Accounts\ApiBundle\Client\AccountsClient $client */
+$client = $this->get('appsco_accounts_api.client');
+```
+
+
 
 Profile Read
 ------------
@@ -13,7 +25,6 @@ Parameters
  * :id - the Appsco Accounts id of the user, or 'me' as alias to the user that gave the authorization
 
 Response
-
 ``` json
 {
     "id": 123,
@@ -30,6 +41,22 @@ Response
     "picture_url": "https://accounts.dev.appsco.com/picture/123"
 }
 ```
+
+Response of this API method is implemented by class
+
+    Appsco\Accounts\ApiBundle\Model\Profile
+
+and the client class method is
+
+``` php
+    /**
+     * @param string $id
+     * @throws \Symfony\Component\HttpKernel\Exception\HttpException
+     * @return Profile
+     */
+    public function profileRead($id = 'me');
+```
+
 
 
 User list
@@ -71,6 +98,20 @@ Response
 ]
 ```
 
+Response of this API method is implemented by class
+
+    Appsco\Accounts\ApiBundle\Model\User
+
+and the client class method is
+
+``` php
+    /**
+     * @return User[]
+     */
+    public function listUsers();
+```
+
+
 Certificate get
 ---------------
 
@@ -96,5 +137,19 @@ Response:
         }
     ]
 }
+```
+
+Response of this API method is implemented by class
+
+    Appsco\Accounts\ApiBundle\Model\CertificateList
+
+and the client class method is
+
+``` php
+    /**
+     * @param string $clientId
+     * @return CertificateList
+     */
+    public function certificateGet($clientId);
 ```
 
