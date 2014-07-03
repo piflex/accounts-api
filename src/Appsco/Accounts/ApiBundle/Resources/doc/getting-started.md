@@ -10,6 +10,7 @@ Installation
 ------------
 
 Installation in quick 5 steps:
+
 1. Download appsco/accounts-api with composer
 2. Load the bundle to kernel
 3. Acquire your client_id and client_secret
