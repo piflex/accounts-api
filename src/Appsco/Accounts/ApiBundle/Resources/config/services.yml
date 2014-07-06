@@ -30,11 +30,9 @@ services:
             - %appsco_accounts_api.client_secret%
             - %appsco_accounts_api.auth_type%
             - @logger
-        public: false
 
     appsco_accounts_api.oauth:
         class: Appsco\Accounts\ApiBundle\OAuth\AppscoOAuth
         arguments:
             - @appsco_accounts_api.client
             - @session
-        public: false
