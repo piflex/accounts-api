@@ -3,8 +3,8 @@ Authentication types
 
 Appsco Accounts API supports two kind of authentications
 
- # With Access Token
- # Client ID and Client Secret
+1. With Access Token
+2. Client ID and Client Secret
 
 The `AccountsClient` default authentication type is by access token, but you can change it by calling the
 method
