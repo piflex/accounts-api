@@ -2,6 +2,7 @@
 
 namespace Appsco\Accounts\ApiBundle\Security\Http\Firewall;
 
+use Appsco\Accounts\ApiBundle\Error\AppscoOAuthException;
 use Appsco\Accounts\ApiBundle\Security\Core\Authentication\Token\AppscoToken;
 use Appsco\Accounts\ApiBundle\Security\Http\Firewall\RelyingParty\RelyingPartyInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -69,7 +70,17 @@ class AppscoAuthenticationListener extends AbstractAuthenticationListener
             return null;
         }
 
-        $tokenOrResponse = $this->getRelyingParty()->manage($myRequest);
+        try {
+            $tokenOrResponse = $this->getRelyingParty()->manage($myRequest);
+        } catch (AuthenticationException $ex) {
+            throw $ex;
+        } catch (\Exception $ex) {
+            $msg = "Appsco OAuth failed";
+            if ($ex instanceof AppscoOAuthException) {
+                $msg .= ': '.$ex->getMessage();
+            }
+            throw new AuthenticationException($msg, 0, $ex);
+        }
 
         if ($tokenOrResponse instanceof Response) {
 
