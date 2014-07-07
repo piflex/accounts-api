@@ -135,7 +135,7 @@ class AppscoOAuth implements AppscoOAuthInterface
      */
     protected function createToken(AccessData $accessData, Profile $profile)
     {
-        $result = new AppscoToken($profile, array(), $accessData->getAccessToken(), $accessData->getIdToken());
+        $result = new AppscoToken($profile, array(), $profile, $accessData->getAccessToken(), $accessData->getIdToken());
         return $result;
     }
 

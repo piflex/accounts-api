@@ -7,6 +7,9 @@ use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
 
 class AppscoToken extends AbstractToken
 {
+    /** @var  Profile */
+    protected $profile;
+
     /** @var  string */
     protected $accessToken;
 
@@ -15,17 +18,19 @@ class AppscoToken extends AbstractToken
 
 
     /**
-     * @param Profile $user
+     * @param mixed $user
      * @param array $roles
+     * @param \Appsco\Accounts\ApiBundle\Model\Profile|null $profile
      * @param string|null $accessToken
      * @param string|null $idToken
      */
-    public function __construct($user, array $roles = array(), $accessToken = null, $idToken = null)
+    public function __construct($user, array $roles = array(), Profile $profile = null, $accessToken = null, $idToken = null)
     {
         parent::__construct($roles);
 
         $this->setUser($user);
 
+        $this->profile = $profile;
         $this->accessToken = $accessToken;
         $this->idToken = $idToken;
 
@@ -57,6 +62,7 @@ class AppscoToken extends AbstractToken
 
 
 
+
     /**
      * @return string
      */
@@ -74,20 +80,30 @@ class AppscoToken extends AbstractToken
     }
 
 
-
-
-
     /**
      * @return Profile|null
      */
     public function getProfile()
     {
-        $user = $this->getUser();
-
-        if ($user instanceof Profile) {
-            return $user;
-        }
-
-        return null;
+        return $this->profile;
     }
-} 
+
+
+
+
+    public function serialize()
+    {
+        $profileStr = serialize($this->profile);
+        $result = serialize(array($profileStr, $this->accessToken, $this->idToken, parent::serialize()));
+        return $result;
+    }
+
+    public function unserialize($serialized)
+    {
+        list($profileStr, $this->accessToken, $this->idToken, $parentStr) = unserialize($serialized);
+        $this->profile = unserialize($profileStr);
+        parent::unserialize($parentStr);
+    }
+
+
+}

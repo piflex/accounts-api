@@ -4,7 +4,7 @@ namespace Appsco\Accounts\ApiBundle\Model;
 
 use JMS\Serializer\Annotation as JMS;
 
-class Directory 
+class Directory implements \Serializable
 {
     /**
      * @var int
@@ -55,5 +55,31 @@ class Directory
     {
         return $this->name;
     }
+
+    /**
+     * (PHP 5 &gt;= 5.1.0)<br/>
+     * String representation of object
+     * @link http://php.net/manual/en/serializable.serialize.php
+     * @return string the string representation of the object or null
+     */
+    public function serialize()
+    {
+        return serialize(array($this->id, $this->name));
+    }
+
+    /**
+     * (PHP 5 &gt;= 5.1.0)<br/>
+     * Constructs the object
+     * @link http://php.net/manual/en/serializable.unserialize.php
+     * @param string $serialized <p>
+     * The string representation of the object.
+     * </p>
+     * @return void
+     */
+    public function unserialize($serialized)
+    {
+        list($this->id, $this->name) = $serialized;
+    }
+
 
 } 

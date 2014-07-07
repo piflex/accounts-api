@@ -1,6 +1,7 @@
 parameters:
     security.authentication.listener.appsco.class: Appsco\Accounts\ApiBundle\Security\Http\Firewall\AppscoAuthenticationListener
     security.authentication.provider.appsco.class: Appsco\Accounts\ApiBundle\Security\Core\Authentication\Provider\AppscoAuthenticationProvider
+    security.authentication.appsco_entry_point.class: Appsco\Accounts\ApiBundle\Security\Http\EntryPoint\AppscoEntryPoint
     appsco_accounts_api.relying_party.main.class: Appsco\Accounts\ApiBundle\Security\Http\Firewall\RelyingParty\CompositeRelyingParty
     appsco_accounts_api.relying_party.start.class: Appsco\Accounts\ApiBundle\Security\Http\Firewall\RelyingParty\OAuthStartRelyingParty
     appsco_accounts_api.relying_party.callback.class: Appsco\Accounts\ApiBundle\Security\Http\Firewall\RelyingParty\OAuthCallbackRelyingParty
@@ -20,6 +21,13 @@ services:
         arguments:
             - ~ # user provider
             - @security.user_checker
+        abstract: true
+
+    security.authentication.appsco_entry_point:
+        class: %security.authentication.appsco_entry_point.class%
+        arguments:
+            - @security.http_utils
+            - ~ # entry url
         abstract: true
 
 

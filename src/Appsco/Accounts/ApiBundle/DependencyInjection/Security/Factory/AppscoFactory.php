@@ -66,6 +66,17 @@ class AppscoFactory extends AbstractFactory
         return $providerId;
     }
 
+    protected function createEntryPoint($container, $id, $config, $defaultEntryPoint)
+    {
+        $entryPointId = 'security.authentication.appsco_entry_point.'.$id;
+        $container
+            ->setDefinition($entryPointId, new DefinitionDecorator('security.authentication.appsco_entry_point'))
+            ->replaceArgument(1, $config['oauth_start_path'])
+        ;
+
+        return $entryPointId;
+    }
+
     /**
      * Subclasses must return the id of the listener template.
      *
@@ -88,7 +99,7 @@ class AppscoFactory extends AbstractFactory
 
     public function getPosition()
     {
-        return 'pre_auth';
+        return 'form';
     }
 
     public function getKey()

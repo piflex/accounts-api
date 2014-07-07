@@ -89,7 +89,7 @@ class AppscoAuthenticationProvider implements AuthenticationProviderInterface
             $this->userChecker->checkPostAuth($user);
         }
 
-        $authenticatedToken = new AppscoToken($user, $user->getRoles(), $token->getAccessToken(), $token->getIdToken());
+        $authenticatedToken = new AppscoToken($user, $user->getRoles(), $token->getProfile(), $token->getAccessToken(), $token->getIdToken());
 
         return $authenticatedToken;
     }
