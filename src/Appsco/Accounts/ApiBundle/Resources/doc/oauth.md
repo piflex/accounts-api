@@ -93,6 +93,52 @@ For example, wuth curl you can set the Authorization header with following comma
     curl -H "Authroization: token THE-OAUTH-ACCESS-TOKEN" https://accounts.dev.appsco.com/api/v1/profile/me
 
 
+Appsco Accounts OAuth Client
+----------------------------
+
+The Appsco Accounts API Bundle implements OAuth client that automates the steps described above.
+
+``` php
+<?php
+
+namespace AcmeBundle;
+
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
+
+class DefaultController extends Controller
+{
+    public function startAction()
+    {
+        return $this->getAppscoOAuth()->start();
+    }
+
+    public function callbackAction(Request $request)
+    {
+        $token = $this->getAppscoOAuth()->callback($request);
+        return new Response("Hello {$token->getUser()->getEmail()}!");
+    }
+
+    /**
+     * @return \Appsco\Accounts\ApiBundle\OAuth\AppscoOAuth
+     */
+    private function getAppscoOAuth()
+    {
+        return $this->get('appsco_accounts_api.oauth');
+    }
+
+}
+
+```
+
+For the profile object filed reference check the [Profile Read API method](api.md#Profile-Read) documentation.
+
+**Note:** The code above does not login that user into your application security context. It just returns the `Token`
+object. In order to login such user and the returned `Token` you should write your own Authentication Listener. The
+appsco/accounts-api in its current version does not implement Authentication Listener.
+
+
+
 Redirect URLs
 =============
 
