@@ -6,7 +6,7 @@ use Appsco\Accounts\ApiBundle\Client\AccountsClient;
 use Appsco\Accounts\ApiBundle\Error\AppscoOAuthException;
 use Appsco\Accounts\ApiBundle\Model\AccessData;
 use Appsco\Accounts\ApiBundle\Model\Profile;
-use Appsco\Accounts\ApiBundle\Security\Core\Authentication\AppscoToken;
+use Appsco\Accounts\ApiBundle\Security\Core\Authentication\Token\AppscoToken;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Appsco\Accounts\ApiBundle\Security\Core\Authentication;
+namespace Appsco\Accounts\ApiBundle\Security\Core\Authentication\Token;
 
 use Appsco\Accounts\ApiBundle\Model\Profile;
 use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;

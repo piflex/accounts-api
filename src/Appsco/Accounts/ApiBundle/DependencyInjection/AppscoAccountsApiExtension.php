@@ -29,6 +29,8 @@ class AppscoAccountsApiExtension extends Extension
         $container->setParameter('appsco_accounts_api.ca_path', $config['ca_path']);
         $container->setParameter('appsco_accounts_api.loose_ssl', $config['loose_ssl']);
         $container->setParameter('appsco_accounts_api.auth_type', $config['auth_type']);
+
+        $loader->load('security.yml');
     }
 
 } 

@@ -3,7 +3,7 @@
 namespace Appsco\Accounts\ApiBundle\OAuth;
 
 use Appsco\Accounts\ApiBundle\Error\AppscoOAuthException;
-use Appsco\Accounts\Apibundle\Security\Core\Authentication\AppscoToken;
+use Appsco\Accounts\Apibundle\Security\Core\Authentication\Token\AppscoToken;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 

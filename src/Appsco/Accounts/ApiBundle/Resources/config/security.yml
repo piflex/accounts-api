@@ -1,0 +1,48 @@
+parameters:
+    security.authentication.listener.appsco.class: Appsco\Accounts\ApiBundle\Security\Http\Firewall\AppscoAuthenticationListener
+    security.authentication.provider.appsco.class: Appsco\Accounts\ApiBundle\Security\Core\Authentication\Provider\AppscoAuthenticationProvider
+    appsco_accounts_api.relying_party.main.class: Appsco\Accounts\ApiBundle\Security\Http\Firewall\RelyingParty\CompositeRelyingParty
+    appsco_accounts_api.relying_party.start.class: Appsco\Accounts\ApiBundle\Security\Http\Firewall\RelyingParty\OAuthStartRelyingParty
+    appsco_accounts_api.relying_party.callback.class: Appsco\Accounts\ApiBundle\Security\Http\Firewall\RelyingParty\OAuthCallbackRelyingParty
+    appsco_accounts_api.oauth.scope: []
+    appsco_accounts_api.oauth.redirect_url: ~
+
+services:
+    security.authentication.listener.appsco:
+        class: %security.authentication.listener.appsco.class%
+        parent: security.authentication.listener.abstract
+        abstract: true
+        calls:
+            - [ setRelyingParty, [@appsco_accounts_api.relying_party.main] ]
+
+    security.authentication.provider.appsco:
+        class: %security.authentication.provider.appsco.class%
+        arguments:
+            - ~ # user provider
+            - @security.user_checker
+        abstract: true
+
+
+    appsco_accounts_api.relying_party.main:
+        class: %appsco_accounts_api.relying_party.main.class%
+        calls:
+            - [ add, [@appsco_accounts_api.relying_party.oauth_start] ]
+            - [ add, [@appsco_accounts_api.relying_party.oauth_callback] ]
+        public: false
+
+    appsco_accounts_api.relying_party.oauth_start:
+        class: %appsco_accounts_api.relying_party.start.class%
+        arguments:
+            - @security.http_utils
+            - @appsco_accounts_api.oauth
+            - %appsco_accounts_api.oauth.scope%
+            - %appsco_accounts_api.oauth.redirect_url%
+        public: false
+
+    appsco_accounts_api.relying_party.oauth_callback:
+        class: %appsco_accounts_api.relying_party.callback.class%
+        arguments:
+            - @security.http_utils
+            - @appsco_accounts_api.oauth
+            - %appsco_accounts_api.default_redirect_uri%
+        public: false
