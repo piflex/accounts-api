@@ -7,4 +7,4 @@ Appsco Accounts API
  * [OAuth details](oauth.md)
  * [Authentication types](authentication.md)
  * [API Methods](api.md)
-
+ * [Using Appsco Accounts Components w/out Symfony](components.md)

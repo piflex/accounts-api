@@ -9,17 +9,17 @@ This version of bundle requires Symfony 2.3+
 Installation
 ------------
 
-Installation in quick 5 steps:
+Installation in easy 9 steps:
 
-1. Download appsco/accounts-api with composer
-2. Load the bundle to kernel
-3. Acquire your client_id and client_secret
-4. Configure the AppscoAccountsApiBundle bundle
-5. User entity
-6. User provider
-7. Routes
-8. Security configuration
-9. Failure path
+1. [Download appsco/accounts-api with composer](#step-1-download-appscoaccounts-api-with-composer)
+2. [Load the bundle to kernel](#step-2-load-the-bundle-to-kernel)
+3. [Acquire your client_id and client_secret](#step-3-acquire-your-client_id-and-client_secret)
+4. [Configure the Bundle](#step-4-configure-the-bundle)
+5. [User entity](#step-5-user-entity)
+6. [User provider](#step-6-user-provider)
+7. [Routes](#step-7-routes)
+8. [Security configuration](#step-8-security-configuration)
+9. [Failure path](#step-9-failure-path)
 
 
 Step 1: Download appsco/accounts-api with composer
@@ -64,8 +64,8 @@ Note that authorization url of the registered app must match the url where from 
 users to Appsco Accounts.
 
 
-Step 4: Configure the AppscoAccountsApiBundle bundle
-----------------------------------------------------
+Step 4: Configure the bundle
+----------------------------
 
 Now you have to tell to the Bundle your client_id, client_secret, and redirect uri:
 
