@@ -4,6 +4,8 @@ namespace Appsco\Accounts\ApiBundle\Tests\Client;
 
 use Appsco\Accounts\ApiBundle\Client\AccountsClient;
 use Appsco\Accounts\ApiBundle\Model\AccessData;
+use Appsco\Accounts\ApiBundle\Model\CertificateList;
+use Appsco\Accounts\ApiBundle\Model\Profile;
 use Appsco\Accounts\ApiBundle\OAuth\Scopes;
 
 class AccountsClientTest extends \PHPUnit_Framework_TestCase
@@ -74,12 +76,14 @@ class AccountsClientTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedValue, $client->getAuthType());
     }
 
-
+    /**
+     * @test
+     */
     public function shouldGetAuthorizeUrl()
     {
         $client = $this->createClient(null, null, null);
 
-        $url = $client->getAuthorizeUrl($state = 'asdfghzxcvbn', array(Scopes::PROFILE_READ));
+        $url = $client->getAuthorizeUrl($state = 'asdfghzxcvbn');
 
         $urlParts = parse_url($url);
         $this->assertEquals($this->expectedScheme, $urlParts['scheme']);
@@ -139,6 +143,71 @@ class AccountsClientTest extends \PHPUnit_Framework_TestCase
 
 
     /**
+     * @test
+     */
+    public function shouldCallProfileRead()
+    {
+        $expectedAccessToken = '123qweasd123qweasd';
+        $expectedUrl = 'https://accounts.dev.appsco.com/api/v1/profile/me';
+
+        $expectedProfile = new Profile();
+
+        $httpClientMock = $this->getHttpClientMock();
+        $httpClientMock->expects($this->once())
+            ->method('get')
+            ->with($expectedUrl, array(), array('Authorization: token '.$expectedAccessToken))
+            ->will($this->returnValue($expectedJson = 'json'));
+        $httpClientMock->expects($this->any())
+            ->method('getStatusCode')
+            ->will($this->returnValue(200));
+
+        $serializerMock = $this->getSerializerMock();
+        $serializerMock->expects($this->once())
+            ->method('deserialize')
+            ->with($expectedJson)
+            ->will($this->returnValue($expectedProfile));
+
+        $client = $this->createClient($httpClientMock, $serializerMock, null);
+        $client->setAccessToken($expectedAccessToken);
+
+        $profile = $client->profileRead();
+        $this->assertSame($expectedProfile, $profile);
+    }
+
+    /**
+     * @test
+     */
+    public function shouldCallCertificatesGet()
+    {
+        $clientID = 'some_client_id';
+        $expectedAccessToken = '123qweasd123qweasd';
+        $expectedUrl = 'https://accounts.dev.appsco.com/api/v1/certificate/'.$clientID;
+
+        $expectedCertificateList = new CertificateList();
+
+        $httpClientMock = $this->getHttpClientMock();
+        $httpClientMock->expects($this->once())
+            ->method('get')
+            ->with($expectedUrl, array(), array('Authorization: token '.$expectedAccessToken))
+            ->will($this->returnValue($expectedJson = 'json'));
+        $httpClientMock->expects($this->any())
+            ->method('getStatusCode')
+            ->will($this->returnValue(200));
+
+        $serializerMock = $this->getSerializerMock();
+        $serializerMock->expects($this->once())
+            ->method('deserialize')
+            ->with($expectedJson)
+            ->will($this->returnValue($expectedCertificateList));
+
+        $client = $this->createClient($httpClientMock, $serializerMock, null);
+        $client->setAccessToken($expectedAccessToken);
+
+        $certificateList = $client->certificateGet($clientID);
+        $this->assertSame($expectedCertificateList, $certificateList);
+    }
+
+    /**
      * @param $httpClientMock
      * @param $serializerMock
      * @param $loggerMock
@@ -151,6 +220,9 @@ class AccountsClientTest extends \PHPUnit_Framework_TestCase
         }
         if (null == $serializerMock) {
             $serializerMock = $this->getSerializerMock();
+        }
+        if (null == $loggerMock) {
+            $loggerMock = $this->getLoggerMock();
         }
         $client = new AccountsClient(
             $httpClientMock,
@@ -182,5 +254,13 @@ class AccountsClientTest extends \PHPUnit_Framework_TestCase
     private function getSerializerMock()
     {
         return $this->getMock('JMS\Serializer\SerializerInterface');
+    }
+
+    /**
+     * @return \PHPUnit_Framework_MockObject_MockObject|\Psr\Log\LoggerInterface
+     */
+    private function getLoggerMock()
+    {
+        return $this->getMock('Psr\Log\LoggerInterface');
     }
 } 

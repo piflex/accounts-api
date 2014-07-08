@@ -78,7 +78,7 @@ class Directory implements \Serializable
      */
     public function unserialize($serialized)
     {
-        list($this->id, $this->name) = $serialized;
+        list($this->id, $this->name) = unserialize($serialized);
     }
 
 

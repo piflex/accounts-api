@@ -338,6 +338,7 @@ class Profile implements \Serializable
      */
     public function serialize()
     {
+        $directoryStr = serialize($this->directory);
         return serialize(array(
             $this->id,
             $this->email,
@@ -351,7 +352,7 @@ class Profile implements \Serializable
             $this->city,
             $this->phone,
             $this->pictureUrl,
-            $this->directory
+            $directoryStr
         ));
     }
 
@@ -379,8 +380,9 @@ class Profile implements \Serializable
             $this->city,
             $this->phone,
             $this->pictureUrl,
-            $this->directory
+            $directoryStr
         ) = unserialize($serialized);
+        $this->directory = unserialize($directoryStr);
     }
 
 

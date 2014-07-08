@@ -6,6 +6,7 @@ use Appsco\Accounts\ApiBundle\Model\AccessData;
 use Appsco\Accounts\ApiBundle\Model\CertificateList;
 use Appsco\Accounts\ApiBundle\Model\Profile;
 use Appsco\Accounts\ApiBundle\Model\User;
+use Appsco\Accounts\ApiBundle\OAuth\Scopes;
 use BWC\Share\Net\HttpClient\HttpClientInterface;
 use BWC\Share\Net\HttpStatusCode;
 use JMS\Serializer\SerializerInterface;
@@ -176,7 +177,7 @@ class AccountsClient
     public function getAuthorizeUrl($state, array $scope = array(), $redirectUri = null)
     {
         if (empty($scope)) {
-            $scope = array('profile_read');
+            $scope = array(Scopes::PROFILE_READ);
         }
 
         $redirectUri = $redirectUri ? $redirectUri : $this->getDefaultRedirectUri();
@@ -317,10 +318,7 @@ class AccountsClient
             ));
         }
 
-        $json = $this->httpClient->makeRequest(
-            $url,
-            'get'
-        );
+        $json = $this->makeRequest($url);
 
         return $this->serializer->deserialize($json, 'Appsco\Accounts\ApiBundle\Model\CertificateList', 'json');
     }
@@ -333,18 +331,25 @@ class AccountsClient
      * @param null $contentType
      * @param array $arrHeaders
      * @return string
-     * @throws LogicException
+     * @throws \LogicException
      * @throws HttpException
      */
     protected function makeRequest(
         $url,
-        $method = 'post',
+        $method = null,
         array $queryData = array(),
         array $postData = array(),
         $contentType = null,
         array $arrHeaders = array()
     )
     {
+        if (null == $method) {
+            if ($this->authType == self::AUTH_TYPE_REQUEST) {
+                $method = 'post';
+            } else {
+                $method = 'get';
+            }
+        }
         $this->prepareRequest($arrHeaders, $postData);
         switch($method){
             case 'post':
@@ -357,7 +362,7 @@ class AccountsClient
                 $json = $this->httpClient->delete($url, $queryData, $arrHeaders);
                 break;
             default:
-                throw new LogicException("Method is not supported [{$method}]");
+                throw new \LogicException(sprintf("Unsupported HTTP method '%s'", $method));
         }
 
         if ($this->httpClient->getStatusCode() != HttpStatusCode::OK) {
