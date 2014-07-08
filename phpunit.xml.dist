@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="autoload.php" color="true">
+    <testsuites>
+        <testsuite name="AppscoAccountApi">
+            <directory suffix="Test.php">./src/Appsco/Accounts/ApiBundle/Tests</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>
