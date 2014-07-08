@@ -10,5 +10,8 @@
         "symfony/symfony": "~2.3",
         "jms/serializer-bundle": "~0.13",
         "appsco/component-share": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~3.7"
     }
 }

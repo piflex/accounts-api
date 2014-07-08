@@ -8,7 +8,7 @@ use Appsco\Accounts\ApiBundle\Model\Profile;
 use Appsco\Accounts\ApiBundle\Model\User;
 use BWC\Share\Net\HttpClient\HttpClientInterface;
 use BWC\Share\Net\HttpStatusCode;
-use JMS\Serializer\Serializer;
+use JMS\Serializer\SerializerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
@@ -31,7 +31,7 @@ class AccountsClient
     /** @var string */
     protected $sufix = '';
 
-    /** @var  Serializer */
+    /** @var  SerializerInterface */
     protected $serializer;
 
     /** @var  string */
@@ -54,7 +54,7 @@ class AccountsClient
 
     public function __construct(
         HttpClientInterface $httpClient,
-        Serializer $serializer,
+        SerializerInterface $serializer,
         $scheme,
         $domain,
         $sufix,
