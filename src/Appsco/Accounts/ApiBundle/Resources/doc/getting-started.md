@@ -170,32 +170,9 @@ code in their controller actions, but still have to declare them in routing:
 # routing.yml
 acme_market_client_appsco_start:
     pattern:  /appsco/start
-    defaults: { _controller: AcmeMarketClientBundle:Appsco:start }
 
 acme_market_client_appsco_callback:
     pattern:  /appsco/callback
-    defaults: { _controller: AcmeMarketClientBundle:Appsco:callback }
-```
-
-And write empty controller actions
-
-``` php
-namespace Acme\MarketClientBundle\Controller;
-
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-
-class AppscoController extends Controller
-{
-    public function startAction()
-    {
-        // will be handled by security
-    }
-
-    public function callbackAction()
-    {
-        // will be handled by security
-    }
-}
 ```
 
 Step 8: Security configuration
